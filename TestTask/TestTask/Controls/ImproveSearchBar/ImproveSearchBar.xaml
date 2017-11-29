@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TestTask.ImproveSearchBar" 
+             x:Name="contentView">
+    <StackLayout>
+        <SearchBar x:Name="searchBar" 
+                   Placeholder="{Binding Source={x:Reference contentView}, Path=Placeholder}"  
+                   Text="{Binding Source={x:Reference contentView}, Path=Text, Mode= TwoWay}"
+                   IsEnabled="{Binding Source={x:Reference contentView}, Path=IsEnabled}"/>
+        <Frame x:Name="dropDownArea"                       
+               IsVisible="False"
+               OutlineColor="Accent"
+               HeightRequest="120">
+            <Grid VerticalOptions="FillAndExpand">
+                <ActivityIndicator x:Name="activityIndicator" 
+                                   IsRunning="False" 
+                                   VerticalOptions="Center"
+                                   IsVisible="{Binding Source={Reference activityIndicator}, Path=IsRunning}"/>
+                <ScrollView x:Name="scroll"  >
+                    <ListView x:Name="dropDownList" 
+                              ItemSelected="OnDropDownListItemSelected" />
+                </ScrollView>
+            </Grid>
+        </Frame>
+    </StackLayout>
+</ContentView>

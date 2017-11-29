@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TestTask.FilledOutFormPage" 
+             Title="TestTask (page 2)"
+             Padding="35, 20"  
+             BindingContext="{StaticResource appViewModel}">
+
+    <ContentPage.NavigationPage.HasNavigationBar>
+        <OnPlatform x:TypeArguments="x:Boolean" iOS="True" WinPhone="False" Android="False" />
+    </ContentPage.NavigationPage.HasNavigationBar>
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style x:Key="fildNameStyle" TargetType="Label">
+                <Setter Property="FontAttributes" Value="Bold" />
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid x:Name="grid"  
+          ColumnSpacing="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"  />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+                   Text="Дані бланка"
+                   FontSize="Large"
+                   FontAttributes="Bold"
+                   VerticalOptions="Start"
+                   HeightRequest="60"
+                   HorizontalOptions="Center"/>
+
+        <Label Grid.Row="1" Grid.Column="0"
+               Style="{StaticResource fildNameStyle}"
+               Text="Ім'я:"/>
+
+        <Label Grid.Row="2" Grid.Column="0"
+               Style="{StaticResource fildNameStyle}"
+               Text="Прізвище:"/>
+
+        <Label Grid.Row="3" Grid.Column="0"
+               Style="{StaticResource fildNameStyle}"
+               Text="Регіон:" />
+
+        <Label Grid.Row="4" Grid.Column="0"
+               Style="{StaticResource fildNameStyle}"
+               Text="Місто:"/>
+
+        <Label Grid.Row="5" Grid.Column="0"
+               Style="{StaticResource fildNameStyle}"
+               Text="Центр:"/>
+
+        <Label x:Name="nameLabel" 
+               Grid.Row="1" Grid.Column="1" 
+               Text="{Binding Path=Name, Mode=OneWay}"/>
+
+        <Label x:Name="surnameLabel" 
+               Grid.Row="2" Grid.Column="1" 
+               Text="{Binding Path=Surname, Mode=OneWay}"/>
+
+        <Label x:Name="regionLabel" 
+               Grid.Row="3" Grid.Column="1" 
+               Text="{Binding Path=Region, StringFormat='{0}'}"/>
+
+        <Label x:Name="cityLabel"
+               Grid.Row="4" Grid.Column="1" 
+               Text="{Binding Path=City, StringFormat='{0}'}"/>
+
+        <Label x:Name="centerLabel"
+               Grid.Row="5" Grid.Column="1" 
+               Text="{Binding Path=Center, StringFormat='{0}'}"/>
+    </Grid>
+
+</ContentPage>

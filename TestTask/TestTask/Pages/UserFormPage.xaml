@@ -1,0 +1,173 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:TestTask"
+             x:Class="TestTask.UserFormPage"
+             Title="TestTask (page 1)"
+             Padding="20" 
+             x:Name="page" 
+             BindingContext="{StaticResource appViewModel}">
+
+    <ContentPage.NavigationPage.HasNavigationBar>
+        <OnPlatform x:TypeArguments="x:Boolean" iOS="True" WinPhone="False" Android="False" />
+    </ContentPage.NavigationPage.HasNavigationBar>
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <local:NullToBoolConverter x:Key="nullToBool" />
+            <Style TargetType="Entry">
+                <Setter Property="HorizontalTextAlignment" Value="Center" />
+                <Setter Property="Keyboard" Value="Text" />
+            </Style>
+            <Style TargetType="SearchBar">
+                <Setter Property="HorizontalTextAlignment" Value="Center"/>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid x:Name="gridUI">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Label Grid.Row="0" Grid.Column="0"
+               Text="Бланк"
+               FontSize="Large"
+               FontAttributes="Bold"
+               VerticalOptions="Start"
+               HeightRequest="60"
+               HorizontalOptions="Center"/>
+
+        <Entry x:Name="entryName" 
+               Grid.Row="1" Grid.Column="0"
+               Placeholder="Ім'я"
+               IsEnabled ="True"
+               Text="{Binding Path=Name, Mode=OneWayToSource}">
+            <Entry.Behaviors>
+                <local:ValidEntryBehavior x:Name="validName" />
+            </Entry.Behaviors>
+        </Entry>
+
+        <Entry x:Name="entrySurname"
+               Grid.Row="2" Grid.Column="0"
+               Placeholder="Прізвище"
+               IsEnabled="{Binding Source={x:Reference validName}, Path=IsValid}" 
+               Text="{Binding Path=Surname, Mode=OneWayToSource}">
+            <Entry.Behaviors>
+                <local:ValidEntryBehavior x:Name="validSurname" />
+            </Entry.Behaviors>
+        </Entry>
+        <!-- Контейнер станів для поля "Регіон" -->
+        <local:StateContainerRegion x:Name="stateContainerRegion" 
+                                    Grid.Row="3" Grid.Column="0" 
+                                    StateSource="{Binding Path=Regions}" 
+                                    ErrorMessage="{Binding Source={x:Reference page}, Path=ErrorMessage, Mode=OneWayToSource}" 
+                                    HeightRequest="40">
+            <!-- Стан Завантаження даних -->
+            <local:StateConditionRegion State="Loading">
+                <ActivityIndicator x:Name="activityIndicator"
+                                   IsRunning="True" 
+                                   HeightRequest="25" 
+                                   VerticalOptions="Center"/>
+            </local:StateConditionRegion>
+            <!-- Стан помылки -->
+            <local:StateConditionRegion State="Error">
+                <Button Text="Перезавантажити дані"
+                        HorizontalOptions="Center" 
+                        Command="{Binding LoadRegionsCommand}"/>
+            </local:StateConditionRegion>
+            <!-- Нормальний стан -->
+            <local:StateConditionRegion x:Name="normal" 
+                                        State="Normal" >
+                <local:ImprovePicker x:Name="pickerRegions" 
+                                     PlaceHolder="-- Регіон --" 
+                                     HorizontalTextAlignment="Center"                                                          
+                                     ItemsSource="{Binding Path=Regions.Result, Mode=OneWay}"
+                                     IsEnabled="False" 
+                                     SelectedItem="{Binding Path=Region, Mode=OneWayToSource}">
+                    <Picker.Triggers>
+                        <MultiTrigger TargetType="Picker">
+                            <MultiTrigger.Conditions>
+                                <BindingCondition Binding="{Binding Source={x:Reference pickerRegions}, Path=ItemsSource, Converter={StaticResource nullToBool}}" Value="True" />
+                                <BindingCondition Binding="{Binding Source={x:Reference validSurname}, Path=IsValid, Converter={StaticResource nullToBool}}" Value="True" />
+                            </MultiTrigger.Conditions>
+                            <Setter Property="IsEnabled" Value="True" />
+                        </MultiTrigger>
+                    </Picker.Triggers>
+                </local:ImprovePicker>
+            </local:StateConditionRegion>
+        </local:StateContainerRegion>
+
+        <local:ImproveSearchBar x:Name="searchBarCity"
+                                Grid.Row="4" Grid.Column="0" 
+                                Placeholder="-- Місто --"  
+                                Focused="OnImproveSearchBarFocused"
+                                Unfocused="OnImproveSearchBarUnfocused" 
+                                IsEnabled="False" 
+                                InputDataObject="{Binding Path=Region, Mode=OneWay}" 
+                                SearchCommand="{Binding CitiesSearchCommand}"  
+                                SearchResult="{Binding Path=Cities, Mode=OneWay}"
+                                OutputDataObject="{Binding Path=City, Mode=OneWayToSource}" 
+                                ErrorMessage="{Binding Source={x:Reference page}, Path=ErrorMessage, Mode=OneWayToSource}">
+            <local:ImproveSearchBar.Triggers>
+                <MultiTrigger TargetType="local:ImproveSearchBar">
+                    <MultiTrigger.Conditions>
+                        <BindingCondition Binding="{Binding Source={x:Reference pickerRegions}, Path=IsEnabled}" Value="True" />
+                        <BindingCondition Binding="{Binding Source={x:Reference pickerRegions}, Path=SelectedItem, Converter={StaticResource nullToBool}}" Value="True" />
+                    </MultiTrigger.Conditions>
+                    <Setter Property="IsEnabled" Value="True" />
+                </MultiTrigger>
+            </local:ImproveSearchBar.Triggers>
+        </local:ImproveSearchBar>
+
+        <local:ImproveSearchBar x:Name="searchBarCenter"
+                                Grid.Row="5" Grid.Column="0" 
+                                Placeholder="-- Назва центру --"  
+                                Focused="OnImproveSearchBarFocused"
+                                Unfocused="OnImproveSearchBarUnfocused" 
+                                IsEnabled="False" 
+                                InputDataObject="{Binding Path=City, Mode=OneWay}"
+                                SearchCommand="{Binding CentersSearchCommand}" 
+                                SearchResult="{Binding Path=Centers, Mode=OneWay}"
+                                OutputDataObject="{Binding Path=Center, Mode=OneWayToSource}" 
+                                ErrorMessage="{Binding Source={x:Reference page}, Path=ErrorMessage, Mode=OneWayToSource}">
+            <local:ImproveSearchBar.Triggers>
+                <MultiTrigger TargetType="local:ImproveSearchBar">
+                    <MultiTrigger.Conditions>
+                        <BindingCondition Binding="{Binding Source={x:Reference searchBarCity}, Path=IsEnabled}" Value="True" />
+                        <BindingCondition Binding="{Binding Source={x:Reference searchBarCity}, Path=OutputDataObject, Converter={StaticResource nullToBool}}" Value="True" />
+                    </MultiTrigger.Conditions>
+                    <Setter Property="IsEnabled" Value="True" />
+                </MultiTrigger>
+            </local:ImproveSearchBar.Triggers>
+        </local:ImproveSearchBar>
+
+        <Button x:Name="buttonFillForm"
+                Grid.Row="6" Grid.Column="0"
+                Text="Заповнити бланк"
+                HorizontalOptions="Center"
+                VerticalOptions="CenterAndExpand"
+                IsEnabled ="False" 
+                Clicked="OnButtonFillFormClicked">
+            <Button.Triggers>
+                <MultiTrigger TargetType="Button">
+                    <MultiTrigger.Conditions>
+                        <BindingCondition Binding="{Binding Source={x:Reference searchBarCenter}, Path=IsEnabled}" Value="True" />
+                        <BindingCondition Binding="{Binding Source={x:Reference searchBarCenter}, Path=OutputDataObject, Converter={StaticResource nullToBool}}" Value="True" />
+                    </MultiTrigger.Conditions>
+                    <Setter Property="IsEnabled" Value="True"/>
+                </MultiTrigger>
+            </Button.Triggers>
+        </Button>
+    </Grid>
+
+</ContentPage>
