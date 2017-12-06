@@ -7,8 +7,10 @@ namespace TestTask
     public class AppViewModel : ViewModelBase
     {
         const string _urlAPIRegions = "https://donor.ua/api/regions";
-        const string _citiesSearchQueryTemplate = "https://donor.ua/api/cities?$filter=startswith(name,'{0}') and regionId eq {1}";
-        const string _centersSearchQueryTemplate = "https://donor.ua/api/centers?$filter=startswith(tolower(name),tolower('{0}')) and cityId eq {1}";
+        const string _citiesSearchQueryTemplate = 
+            "https://donor.ua/api/cities?$filter=startswith(name,'{0}') and regionId eq {1}";
+        const string _centersSearchQueryTemplate = 
+            "https://donor.ua/api/centers?$filter=startswith(tolower(name),tolower('{0}')) and cityId eq {1}";
         string _name, _surname;
         NotifyTaskCompletion<List<APIData>> _regions, _cities, _centers;
         APIData _region, _city, _center;

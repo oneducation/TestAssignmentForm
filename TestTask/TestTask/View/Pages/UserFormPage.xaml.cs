@@ -36,6 +36,8 @@ namespace TestTask
             InitializeComponent();
         }
 
+        // Ховає всі елементи UI, крім SearchBar, що отримав Focus. 
+        // При цьому SearchBar автоматично підіймається на самий верх UserFormPage
         private void OnImproveSearchBarFocused(object sender, FocusEventArgs e)
         {
             View control = (View)sender;
@@ -47,6 +49,8 @@ namespace TestTask
             gridUI.RowSpacing = 0;
         }
 
+        // При втраті SearchBar фокусу, відображаються всі приховані елементи  
+        // і відновлюється попередній стан UserFormPage зі всіма елементами UI.
         private void OnImproveSearchBarUnfocused(object sender, FocusEventArgs e)
         {
             View control = (View)sender;

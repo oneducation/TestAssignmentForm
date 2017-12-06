@@ -187,6 +187,8 @@ namespace TestTask
             ((ImproveSearchBar)bindable).OnTextChanged((string)newValue);
         }
 
+        // Кожного разу при зміні текстового поля (вводі нової літери чи видалення раніше введених) 
+        // запускається новий пошук результатів.
         void OnTextChanged(string userInput)
         {
             if (userInput == null || InputDataObject == null || !searchBar.IsFocused)

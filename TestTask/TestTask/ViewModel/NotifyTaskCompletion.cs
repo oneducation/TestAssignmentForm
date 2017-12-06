@@ -1,16 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace TestTask
 {
-    /// <summary>
-    /// Source: https://msdn.microsoft.com/en-us/magazine/dn605875.aspx?f=255&MSPPError=-2147217396
-    /// </summary>
-    /// <typeparam name="TResult"></typeparam>
+    // Джерело: https://msdn.microsoft.com/en-us/magazine/dn605875.aspx
+
     public sealed class NotifyTaskCompletion<TResult> : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
